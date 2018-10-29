@@ -1,6 +1,6 @@
 # sniff
 
-A simple network sniffer that capture packets and make some statitiscs
+A simple network sniffer that capture packets and make some statistics
 
 ## Usage
 ```
