@@ -2,6 +2,8 @@ from collections import Counter
 from operator import itemgetter
 
 from pyshark import FileCapture
+from terminaltables import AsciiTable
+
 
 def make_obj(packet):
     try:
@@ -36,22 +38,17 @@ def middle_and_total_length_packets(packets):
 
 def presentation(packets):
     print('\n#####FLOWS#####\n')
-    for pkg in packets:
-        print('{0}/{1} from {2}:{3} to {4}:{5} {6} kb'.format(pkg['type'],
-        pkg['type_high'],pkg['ip_src'], pkg['port_src'],
-        pkg['ip_dst'], pkg['port_dst'], pkg['length']))
+    table_data = [['type', 'from', 'to', 'size']]
+    for packet in packets:
+        table_data.append([
+            '{0}/{1}'.format(packet['type'],packet['type_high']), 
+            '{0}:{1}'.format(packet['ip_src'], packet['port_src']), 
+            '{0}:{1}'.format(packet['ip_dst'],packet['port_dst']), 
+            '{0} kb'.format(packet['length'])]
+        )
+    print(AsciiTable(table_data).table)
 
-if __name__ == '__main__':
-    import sys
-    import os
-    from terminaltables import AsciiTable
-
-    timeout = sys.argv[1]
-    interface = sys.argv[2]
-    filename = sys.argv[3]
-    os.system("sudo timeout {0} tcpdump -i {1} '((tcp) or (ip))' -w {2}".format(timeout, interface, filename))
-    packets = list(read_pcap_file(filename))
-    presentation(packets)
+def statistics(packets):
     total_length, middle_len_packets = middle_and_total_length_packets(packets)
     table = [
         ['main ip transmitter', 'main ip receptor' , 
@@ -59,4 +56,16 @@ if __name__ == '__main__':
         [main_ip_src(packets), main_ip_dst(packets), '%.2f kb' % middle_len_packets, '%d kb' % total_length]
     ]
     print(AsciiTable(table).table)
+
+if __name__ == '__main__':
+    import sys
+    import os
+
+    timeout = sys.argv[1]
+    interface = sys.argv[2]
+    filename = sys.argv[3]
+    os.system("sudo timeout {0} tcpdump -i {1} '((tcp) or (ip))' -w {2}".format(timeout, interface, filename))
+    packets = list(read_pcap_file(filename))
+    presentation(packets)
+    statistics(packets)
     print("\033[92m {}\033[00m".format('OK'))
