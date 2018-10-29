@@ -13,7 +13,7 @@ def make_obj(packet):
             'length': packet.length, 
             'type': packet.transport_layer,
             'type_high': packet.highest_layer 
-        } 
+        }   
     except:
         pass
 
@@ -37,7 +37,8 @@ def middle_and_total_length_packets(packets):
 def presentation(packets):
     print('\n#####FLOWS#####\n')
     for pkg in packets:
-        print('{0}/{1} {2}:{3}'.format(pkg['type'],pkg['type_high'],pkg['ip_dst'], pkg['port_dst']))
+        print('{0}/{1} from {2}:{3} to {4}:{5}'.format(pkg['type'],
+        pkg['type_high'],pkg['ip_src'], pkg['port_src'], pkg['ip_dst'], pkg['port_dst']))
 
 if __name__ == '__main__':
     import sys
