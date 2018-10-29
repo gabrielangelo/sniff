@@ -37,8 +37,9 @@ def middle_and_total_length_packets(packets):
 def presentation(packets):
     print('\n#####FLOWS#####\n')
     for pkg in packets:
-        print('{0}/{1} from {2}:{3} to {4}:{5}'.format(pkg['type'],
-        pkg['type_high'],pkg['ip_src'], pkg['port_src'], pkg['ip_dst'], pkg['port_dst']))
+        print('{0}/{1} from {2}:{3} to {4}:{5} {6} kb'.format(pkg['type'],
+        pkg['type_high'],pkg['ip_src'], pkg['port_src'],
+        pkg['ip_dst'], pkg['port_dst'], pkg['length']))
 
 if __name__ == '__main__':
     import sys
